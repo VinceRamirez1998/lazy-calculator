@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GWA Calculator (Philippines)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.4/dist/tesseract.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Loader (initially hidden) -->
+    <div class="loader-con" id="imageLoader" style="display: none">
+      <p class="heading-extraction">Extracting your data . . .</p>
+      <div class="pfile" style="--i: 0"></div>
+      <div class="pfile" style="--i: 1"></div>
+      <div class="pfile" style="--i: 2"></div>
+      <div class="pfile" style="--i: 3"></div>
+      <div class="pfile" style="--i: 4"></div>
+      <div class="pfile" style="--i: 5"></div>
+    </div>
+
+    <div class="container">
+      <h1>GWA Calculator</h1>
+      <div class="upload-group">
+        <!-- Upload COG (Image Upload) -->
+        <label class="upload-card" for="imageUpload">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/1829/1829586.png"
+            alt="Image Icon"
+          />
+          <span>Upload COG</span>
+        </label>
+        <input type="file" id="imageUpload" accept="image/*" hidden />
+
+        <!-- Upload COR (PDF/Image Upload) -->
+        <label class="upload-card" for="corUpload">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/337/337946.png"
+            alt="Document Icon"
+          />
+          <span>Upload COR</span>
+        </label>
+        <input type="file" id="corUpload" accept="image/*,.pdf" hidden />
+      </div>
+
+      <div class="form">
+        <input type="text" id="subject" placeholder="Subject Name" />
+        <input type="number" id="units" placeholder="Number of Units" min="1" />
+        <input
+          type="number"
+          id="grade"
+          placeholder="Final Grade"
+          min="1"
+          max="5"
+        />
+        <button onclick="addSubject()">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/748/748113.png"
+            alt="Add"
+            class="icon"
+          />
+          Add Subject
+        </button>
+      </div>
+
+      <div class="table-scroll">
+        <table id="subjectTable">
+          <thead>
+            <tr>
+              <th>Subject</th>
+              <th>Units</th>
+              <th>Final Grade</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <button class="calc-btn" onclick="calculateGWA()">What is my GWA?</button>
+      <h2 id="gwaResult"></h2>
+
+      <footer>
+        <p>Let's Connect!</p>
+        <div class="socials">
+          <a
+            href="https://www.facebook.com/BenedictVincentRamirez"
+            target="_blank"
+          >
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/733/733547.png"
+              alt="Facebook"
+            />
+          </a>
+          <a href="https://www.instagram.com/bvramirezzzz/" target="_blank">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/733/733558.png"
+              alt="Instagram"
+            />
+          </a>
+          <a href="https://www.tiktok.com/@lazzzydev" target="_blank">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png"
+              alt="TikTok"
+            />
+          </a>
+        </div>
+      </footer>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
