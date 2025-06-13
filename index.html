@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GWA Calculator (Philippines)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.4/dist/tesseract.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -19,15 +21,17 @@
     <!-- Loader (initially hidden) -->
     <div class="loader-con" id="imageLoader" style="display: none">
       <p class="heading-extraction">Extracting your data . . .</p>
-      <div class="pfile" style="--i: 0"></div>
-      <div class="pfile" style="--i: 1"></div>
-      <div class="pfile" style="--i: 2"></div>
-      <div class="pfile" style="--i: 3"></div>
-      <div class="pfile" style="--i: 4"></div>
-      <div class="pfile" style="--i: 5"></div>
+      <div class="loader-files">
+        <div class="pfile" style="--i: 0"></div>
+        <div class="pfile" style="--i: 1"></div>
+        <div class="pfile" style="--i: 2"></div>
+        <div class="pfile" style="--i: 3"></div>
+        <div class="pfile" style="--i: 4"></div>
+        <div class="pfile" style="--i: 5"></div>
+      </div>
     </div>
 
-    <div class="container">
+    <div id="gwaContainer" class="container">
       <h1>GWA Calculator</h1>
       <div class="upload-group">
         <!-- Upload COG (Image Upload) -->
@@ -86,7 +90,13 @@
       </div>
 
       <button class="calc-btn" onclick="calculateGWA()">What is my GWA?</button>
-      <h2 id="gwaResult"></h2>
+      <div id="gwaOutput" class="gwa-output hidden">
+        <h2 id="gwaResult"></h2>
+        <div class="download-buttons">
+          <button onclick="downloadStyledPDF()">Download as PDF</button>
+          <button onclick="downloadAsImage()">Download as JPG</button>
+        </div>
+      </div>
 
       <footer>
         <p>Let's Connect!</p>

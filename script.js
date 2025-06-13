@@ -99,7 +99,11 @@ function calculateGWA() {
   });
 
   const gwa = (totalWeighted / totalUnits).toFixed(4);
-  document.getElementById("gwaResult").innerText = `🎓 Your GWA is ${gwa}`;
+  const resultElement = document.getElementById("gwaResult");
+  resultElement.innerText = `🎓 Your GWA is ${gwa}`;
+
+  // Show the output block now
+  document.getElementById("gwaOutput").classList.remove("hidden");
 }
 
 function clearForm() {
@@ -297,3 +301,41 @@ document.getElementById("imageUpload").addEventListener("change", function () {
     alert("Please upload a valid image screenshot.");
   }
 });
+
+function downloadStyledPDF() {
+  const element = document.getElementById("gwaContainer");
+
+  html2canvas(element, {
+    scale: 3, // higher scale = better quality
+    useCORS: true,
+  }).then((canvas) => {
+    const imgData = canvas.toDataURL("image/png");
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "pt",
+      format: "a4",
+    });
+
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+    pdf.addImage(imgData, "PNG", 20, 20, pdfWidth - 40, pdfHeight);
+    pdf.save("gwa-calculator-full.pdf");
+  });
+}
+
+function downloadAsImage() {
+  const element = document.getElementById("gwaContainer");
+
+  html2canvas(element, {
+    scale: 2, // or 3 if you want sharper
+    useCORS: true,
+  }).then((canvas) => {
+    const link = document.createElement("a");
+    link.download = "gwa-calculator.jpg";
+    link.href = canvas.toDataURL("image/jpeg", 0.9); // 0.9 = 90% quality
+    link.click();
+  });
+}
