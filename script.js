@@ -104,6 +104,9 @@ function calculateGWA() {
 
   // Show the output block now
   document.getElementById("gwaOutput").classList.remove("hidden");
+  document.getElementById("gwaOutput").scrollIntoView({
+    behavior: "smooth",
+  });
 }
 
 function clearForm() {
@@ -303,27 +306,41 @@ document.getElementById("imageUpload").addEventListener("change", function () {
 });
 
 function downloadStyledPDF() {
-  const element = document.getElementById("gwaContainer");
+  const container = document.getElementById("gwaContainer");
+  const tableScroll = document.querySelector(".table-scroll");
 
-  html2canvas(element, {
-    scale: 3, // higher scale = better quality
-    useCORS: true,
-  }).then((canvas) => {
-    const imgData = canvas.toDataURL("image/png");
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: "pt",
-      format: "a4",
+  // 1. Temporarily expand the scrollable container
+  const originalMaxHeight = tableScroll.style.maxHeight;
+  tableScroll.style.maxHeight = "unset";
+  tableScroll.style.overflow = "visible";
+
+  setTimeout(() => {
+    html2canvas(container, {
+      scale: 2,
+      useCORS: true,
+      scrollY: -window.scrollY,
+      windowHeight: container.scrollHeight,
+    }).then((canvas) => {
+      // 2. Restore the original scroll settings
+      tableScroll.style.maxHeight = originalMaxHeight || "300px";
+      tableScroll.style.overflow = "auto";
+
+      const imgData = canvas.toDataURL("image/png");
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "pt",
+        format: "a4",
+      });
+
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+      pdf.addImage(imgData, "PNG", 20, 20, pdfWidth - 40, pdfHeight);
+      pdf.save("gwa-calculator.pdf");
     });
-
-    const imgProps = pdf.getImageProperties(imgData);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-    pdf.addImage(imgData, "PNG", 20, 20, pdfWidth - 40, pdfHeight);
-    pdf.save("gwa-calculator-full.pdf");
-  });
+  }, 100);
 }
 
 function downloadAsImage() {
