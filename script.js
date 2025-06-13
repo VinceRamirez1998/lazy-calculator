@@ -327,15 +327,31 @@ function downloadStyledPDF() {
 }
 
 function downloadAsImage() {
-  const element = document.getElementById("gwaContainer");
+  const container = document.getElementById("gwaContainer");
+  const tableScroll = document.querySelector(".table-scroll");
 
-  html2canvas(element, {
-    scale: 2, // or 3 if you want sharper
-    useCORS: true,
-  }).then((canvas) => {
-    const link = document.createElement("a");
-    link.download = "gwa-calculator.jpg";
-    link.href = canvas.toDataURL("image/jpeg", 0.9); // 0.9 = 90% quality
-    link.click();
-  });
+  // Step 1: Temporarily expand scrollable area to fit content
+  const originalMaxHeight = tableScroll.style.maxHeight;
+  tableScroll.style.maxHeight = "unset";
+  tableScroll.style.overflow = "visible";
+
+  // Step 2: Wait for layout to adjust before capture
+  setTimeout(() => {
+    html2canvas(container, {
+      scale: 2,
+      useCORS: true,
+      scrollY: -window.scrollY,
+      windowHeight: container.scrollHeight,
+    }).then((canvas) => {
+      // Step 3: Restore original style
+      tableScroll.style.maxHeight = originalMaxHeight || "300px";
+      tableScroll.style.overflow = "auto";
+
+      // Step 4: Save image
+      const link = document.createElement("a");
+      link.download = "gwa-calculator-full.jpg";
+      link.href = canvas.toDataURL("image/jpeg", 0.95);
+      link.click();
+    });
+  }, 100); // slight delay to allow reflow
 }
