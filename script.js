@@ -306,10 +306,24 @@ document.getElementById("imageUpload").addEventListener("change", function () {
 });
 
 function downloadStyledPDF() {
+  // 📌 1. Ask for student/application info
+  const fullName = prompt("Enter your full name:");
+  const course = prompt("Enter your course and section (e.g., BSIT-4G):");
+  const semYear = prompt("Enter Year Level (e.g., 3rd Year - 1st Sem):");
+  const listType = prompt(
+    "Applying for: (e.g., President Lister or Deans Lister):"
+  );
+
+  // 🛑 Stop if any field is empty or cancelled
+  if (!fullName || !course || !semYear || !listType) {
+    alert("All fields are required to generate your application PDF.");
+    return;
+  }
+
   const container = document.getElementById("gwaContainer");
   const tableScroll = document.querySelector(".table-scroll");
 
-  // 1. Temporarily expand the scrollable container
+  // 2. Expand scroll area temporarily
   const originalMaxHeight = tableScroll.style.maxHeight;
   tableScroll.style.maxHeight = "unset";
   tableScroll.style.overflow = "visible";
@@ -321,7 +335,7 @@ function downloadStyledPDF() {
       scrollY: -window.scrollY,
       windowHeight: container.scrollHeight,
     }).then((canvas) => {
-      // 2. Restore the original scroll settings
+      // 3. Restore scroll settings
       tableScroll.style.maxHeight = originalMaxHeight || "300px";
       tableScroll.style.overflow = "auto";
 
@@ -330,15 +344,30 @@ function downloadStyledPDF() {
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "pt",
-        format: "a4",
+        format: [612, 936],
       });
 
       const imgProps = pdf.getImageProperties(imgData);
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-      pdf.addImage(imgData, "PNG", 20, 20, pdfWidth - 40, pdfHeight);
-      pdf.save("gwa-calculator.pdf");
+      const paddingTop = 30;
+      const contentY = paddingTop + 80;
+
+      // 4. Add header info before the screenshot
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(14);
+      pdf.setTextColor(40);
+      pdf.text(`Name: ${fullName}`, 40, 30);
+      pdf.text(`Course: ${course}`, 40, 50);
+      pdf.text(`Year & Semester: ${semYear}`, 40, 70);
+      pdf.text(`Application: ${listType}`, 40, 90);
+
+      // 5. Add screenshot below text info
+      pdf.addImage(imgData, "PNG", 20, contentY, pdfWidth - 40, imgHeight);
+
+      // 6. Download the PDF
+      pdf.save(`GWA_${fullName.replace(/\s+/g, "_")}.pdf`);
     });
   }, 100);
 }
