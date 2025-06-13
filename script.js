@@ -355,13 +355,32 @@ function downloadStyledPDF() {
       const contentY = paddingTop + 80;
 
       // 4. Add header info before the screenshot
-      pdf.setFont("helvetica", "normal");
       pdf.setFontSize(14);
       pdf.setTextColor(40);
-      pdf.text(`Name: ${fullName}`, 40, 30);
-      pdf.text(`Course: ${course}`, 40, 50);
-      pdf.text(`Year & Semester: ${semYear}`, 40, 70);
-      pdf.text(`Application: ${listType}`, 40, 90);
+
+      // Name
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Name:", 40, 30);
+      pdf.setFont("helvetica", "normal");
+      pdf.text(fullName, 100, 30);
+
+      // Course
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Course:", 40, 50);
+      pdf.setFont("helvetica", "normal");
+      pdf.text(course, 100, 50);
+
+      // Semester/Year
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Year & Semester:", 40, 70);
+      pdf.setFont("helvetica", "normal");
+      pdf.text(semYear, 160, 70);
+
+      // Application
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Application:", 40, 90);
+      pdf.setFont("helvetica", "normal");
+      pdf.text(listType, 140, 90);
 
       // 5. Add screenshot below text info
       pdf.addImage(imgData, "PNG", 20, contentY, pdfWidth - 40, imgHeight);
@@ -395,7 +414,7 @@ function downloadAsImage() {
 
       // Step 4: Save image
       const link = document.createElement("a");
-      link.download = "gwa-calculator-full.jpg";
+      link.download = "follow-vinceramirez.jpg";
       link.href = canvas.toDataURL("image/jpeg", 0.95);
       link.click();
     });
