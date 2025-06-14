@@ -52,7 +52,7 @@ h1 {
 }
 
 h1::before {
-  content: "";
+  /* content: "";
   display: inline-block;
   width: 28px;
   height: 28px;
@@ -60,7 +60,7 @@ h1::before {
   background-size: cover;
   background-repeat: no-repeat;
   margin-right: 10px;
-  vertical-align: middle;
+  vertical-align: middle; */
 }
 
 .form {
