@@ -63,6 +63,18 @@ h1::before {
   vertical-align: middle; */
 }
 
+.btn.primary:hover {
+  background-color: #b91e1e !important;
+}
+
+.modal-box {
+  max-height: 80vh;
+  width: 650px !important;
+  overflow-y: auto;
+  background-color: #530303 !important;
+  color: white;
+}
+
 .form {
   display: grid;
   grid-template-columns: 1.5fr 1fr 1fr auto;
