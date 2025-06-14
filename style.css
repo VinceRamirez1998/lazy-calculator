@@ -454,7 +454,7 @@ footer {
   background: rgba(0, 0, 0, 0.5);
 }
 /* white box */
-.modal-box {
+.modal-box-privacy {
   position: relative;
   background: #fff;
   padding: 24px;
@@ -465,18 +465,18 @@ footer {
   z-index: 1001;
   font-family: "Inter", sans-serif;
 }
-.modal-box h2 {
+.modal-box-privacy h2 {
   margin-top: 0;
   color: #9c0808;
 }
-.modal-box label {
+.modal-box-privacy label {
   display: block;
   margin: 12px 0 4px;
   font-weight: 600;
   color: #530303;
 }
-.modal-box input,
-.modal-box select {
+.modal-box-privacy input,
+.modal-box-privacy select {
   width: 100%;
   padding: 8px 10px;
   border: 1px solid #ccc;
