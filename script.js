@@ -428,9 +428,25 @@ function generatePDF(fullName, course, semYear, listType) {
         // 7) Draw the full screenshot below
         pdf.addImage(imgData, "PNG", 0, headerY, pdfW, imgH);
 
+        // —— 8) Add vertical watermark down each side ——
+        pdf
+          .setFont("helvetica", "italic")
+          .setFontSize(8)
+          .setTextColor("#999999");
+        const midY = pdf.internal.pageSize.getHeight() / 2;
+
+        // left margin, rotated 90°
+        pdf.text("generated from lazydevcalculator", 10, midY, { angle: 90 });
+
+        // right margin, rotated -90°
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        pdf.text("generated from lazydevcalculator", pageWidth - 10, midY, {
+          angle: -90,
+        });
+
+        // —— 9) Save the PDF ——
         const filename = `${course}, ${fullName} - GWA.pdf`;
         pdf.save(filename);
-        // 8) Save file
       });
     }, 100);
   };
