@@ -493,11 +493,3 @@ function downloadAsImage() {
     });
   }, 100); // slight delay to allow reflow
 }
-
-function openPrivacyModal() {
-  document.getElementById("privacyModal").classList.remove("privacy-hidden");
-}
-
-function closePrivacyModal() {
-  document.getElementById("privacyModal").classList.add("privacy-hidden");
-}
