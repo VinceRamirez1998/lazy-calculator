@@ -439,10 +439,10 @@ function generatePDF(fullName, course, semYear, listType) {
         pdf.text("generated from lazydevcalculator", 10, midY, { angle: 90 });
 
         // right margin, rotated -90°
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        pdf.text("generated from lazydevcalculator", pageWidth - 10, midY, {
-          angle: -90,
-        });
+        // const pageWidth = pdf.internal.pageSize.getWidth();
+        // pdf.text("generated from lazydevcalculator", pageWidth - 10, midY, {
+        //   angle: -90,
+        // });
 
         // —— 9) Save the PDF ——
         const filename = `${course}, ${fullName} - GWA.pdf`;
