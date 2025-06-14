@@ -332,7 +332,13 @@ function generatePDF(fullName, course, semYear, listType) {
   const gwaText = document.getElementById("gwaResult").innerText;
   const gwa = parseFloat((gwaText.match(/([\d.]+)/) || [])[1] || 0);
   let statusText, noteText;
-  if (gwa <= 1.25) {
+
+  if (listType === "Scholarship" || listType === "None") {
+    statusText = listType;
+    noteText = "Note: No Remarks";
+  }
+  // Otherwise use your existing GWA tiers
+  else if (gwa <= 1.25) {
     statusText = "President’s Lister";
     noteText = "Note: President’s Lister Qualified.";
   } else if (gwa <= 1.75) {
