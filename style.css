@@ -417,6 +417,83 @@ footer {
   transform: translateY(-1px);
 }
 
+/* Modal base */
+.modal.hidden {
+  display: none;
+}
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* translucent backdrop */
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+/* white box */
+.modal-box {
+  position: relative;
+  background: #fff;
+  padding: 24px;
+  border-radius: 8px;
+  width: 320px;
+  max-width: 90%;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+  font-family: "Inter", sans-serif;
+}
+.modal-box h2 {
+  margin-top: 0;
+  color: #9c0808;
+}
+.modal-box label {
+  display: block;
+  margin: 12px 0 4px;
+  font-weight: 600;
+  color: #530303;
+}
+.modal-box input,
+.modal-box select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+.modal-buttons {
+  margin-top: 20px;
+  text-align: right;
+}
+.modal-buttons .btn {
+  padding: 8px 12px;
+  margin-left: 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.modal-buttons .btn.primary {
+  background: #9c0808;
+  color: white;
+}
+.modal-buttons .btn.primary:hover {
+  background: #530303;
+}
+.modal-buttons .btn:hover {
+  background: #eee;
+}
+
 @keyframes flyRight {
   0% {
     left: -10%;

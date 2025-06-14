@@ -305,26 +305,50 @@ document.getElementById("imageUpload").addEventListener("change", function () {
   }
 });
 
-function downloadStyledPDF() {
-  // 📌 1. Ask for student/application info
-  const fullName = prompt("Enter your full name:");
-  const course = prompt("Enter your course and section (e.g., BSIT-4G):");
-  const semYear = prompt("Enter Year Level (e.g., 3rd Year - 1st Sem):");
-  const listType = prompt(
-    "Applying for: (e.g., President Lister or Deans Lister):"
-  );
+function openModal() {
+  document.getElementById("infoModal").classList.remove("hidden");
+}
 
-  // 🛑 Stop if any field is empty or cancelled
+function closeModal() {
+  document.getElementById("infoModal").classList.add("hidden");
+}
+
+function submitInfo() {
+  const fullName = document.getElementById("inputFullName").value.trim();
+  const course = document.getElementById("inputCourse").value.trim();
+  const semYear = document.getElementById("inputSemYear").value.trim();
+  const listType = document.getElementById("inputListType").value;
+
   if (!fullName || !course || !semYear || !listType) {
-    alert("All fields are required to generate your application PDF.");
+    alert("Please fill in all fields.");
     return;
   }
+  closeModal();
+  generatePDF(fullName, course, semYear, listType);
+}
 
+function generatePDF(fullName, course, semYear, listType) {
+  // 1) Determine GWA and note
+  const gwaText = document.getElementById("gwaResult").innerText;
+  const gwa = parseFloat((gwaText.match(/([\d.]+)/) || [0, 0])[1]);
+  let note;
+  if (gwa <= 1.25) note = "Note: President's Lister Qualified.";
+  else if (gwa <= 1.75) note = "Note: Dean's Lister Qualified.";
+  else note = "Note: Not Qualified This Sem.";
+
+  // 2) Optional sound
+  const sa = document.getElementById("successAudio");
+  const fa = document.getElementById("failAudio");
+  if (note.includes("Not Qualified")) {
+    if (fa) fa.play().catch(() => {});
+  } else {
+    if (sa) sa.play().catch(() => {});
+  }
+
+  // 3) Expand the table for full capture
   const container = document.getElementById("gwaContainer");
   const tableScroll = document.querySelector(".table-scroll");
-
-  // 2. Expand scroll area temporarily
-  const originalMaxHeight = tableScroll.style.maxHeight;
+  const origMaxH = tableScroll.style.maxHeight;
   tableScroll.style.maxHeight = "unset";
   tableScroll.style.overflow = "visible";
 
@@ -335,57 +359,53 @@ function downloadStyledPDF() {
       scrollY: -window.scrollY,
       windowHeight: container.scrollHeight,
     }).then((canvas) => {
-      // 3. Restore scroll settings
-      tableScroll.style.maxHeight = originalMaxHeight || "300px";
+      // restore scroll
+      tableScroll.style.maxHeight = origMaxH || "300px";
       tableScroll.style.overflow = "auto";
 
+      // 4) Setup PDF
       const imgData = canvas.toDataURL("image/png");
       const { jsPDF } = window.jspdf;
+      const pdfW = 612; // 8.5" in points
+      const header = 120; // leave room for header + note
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "pt",
-        format: [612, 936],
+        format: [pdfW, header + (canvas.height * pdfW) / canvas.width],
       });
 
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      // **FIXED**: getImageProperties on the pdf *instance*
+      const props = pdf.getImageProperties(imgData);
+      const imgH = (props.height * pdfW) / props.width;
 
-      const paddingTop = 30;
-      const contentY = paddingTop + 80;
+      // 5) Draw header
+      pdf
+        .setFontSize(14)
+        .setTextColor(40)
+        .setFont("helvetica", "bold")
+        .text("Name:", 40, 30)
+        .setFont("helvetica", "normal")
+        .text(fullName, 140, 30)
+        .setFont("helvetica", "bold")
+        .text("Course:", 40, 50)
+        .setFont("helvetica", "normal")
+        .text(course, 140, 50)
+        .setFont("helvetica", "bold")
+        .text("Year/Sem:", 40, 70)
+        .setFont("helvetica", "normal")
+        .text(semYear, 140, 70)
+        .setFont("helvetica", "bold")
+        .text("Application:", 40, 90)
+        .setFont("helvetica", "normal")
+        .text(listType, 140, 90)
+        .setFont("helvetica", "bold")
+        .setTextColor("#b30000")
+        .text(note, 40, 115);
 
-      // 4. Add header info before the screenshot
-      pdf.setFontSize(14);
-      pdf.setTextColor(40);
+      // 6) Embed the screenshot
+      pdf.addImage(imgData, "PNG", 0, header, pdfW, imgH);
 
-      // Name
-      pdf.setFont("helvetica", "bold");
-      pdf.text("Name:", 40, 30);
-      pdf.setFont("helvetica", "normal");
-      pdf.text(fullName, 100, 30);
-
-      // Course
-      pdf.setFont("helvetica", "bold");
-      pdf.text("Course:", 40, 50);
-      pdf.setFont("helvetica", "normal");
-      pdf.text(course, 100, 50);
-
-      // Semester/Year
-      pdf.setFont("helvetica", "bold");
-      pdf.text("Year & Semester:", 40, 70);
-      pdf.setFont("helvetica", "normal");
-      pdf.text(semYear, 160, 70);
-
-      // Application
-      pdf.setFont("helvetica", "bold");
-      pdf.text("Application:", 40, 90);
-      pdf.setFont("helvetica", "normal");
-      pdf.text(listType, 140, 90);
-
-      // 5. Add screenshot below text info
-      pdf.addImage(imgData, "PNG", 20, contentY, pdfWidth - 40, imgHeight);
-
-      // 6. Download the PDF
+      // 7) Save
       pdf.save(`GWA_${fullName.replace(/\s+/g, "_")}.pdf`);
     });
   }, 100);

@@ -93,7 +93,7 @@
       <div id="gwaOutput" class="gwa-output hidden">
         <h2 id="gwaResult"></h2>
         <div class="download-buttons">
-          <button onclick="downloadStyledPDF()">Download as PDF</button>
+          <button onclick="openModal()">Download as PDF</button>
           <button onclick="downloadAsImage()">Download as JPG</button>
         </div>
       </div>
@@ -127,5 +127,42 @@
     </div>
 
     <script src="script.js"></script>
+    <!-- Custom Info Modal -->
+    <div id="infoModal" class="modal hidden">
+      <div class="modal-overlay" onclick="closeModal()"></div>
+      <div class="modal-box">
+        <h2>Enter Applicant Info</h2>
+        <label for="inputFullName">Full Name</label>
+        <input
+          id="inputFullName"
+          type="text"
+          placeholder="e.g. Juan Dela Cruz"
+        />
+
+        <label for="inputCourse">Course & Section</label>
+        <input id="inputCourse" type="text" placeholder="e.g. BSIT-4G" />
+
+        <label for="inputSemYear">Year & Semester</label>
+        <input
+          id="inputSemYear"
+          type="text"
+          placeholder="e.g. 3rd Year - 1st Sem"
+        />
+
+        <label for="inputListType">Applying for</label>
+        <select id="inputListType">
+          <option value="">— Select —</option>
+          <option value="President's Lister">President's Lister</option>
+          <option value="Dean's Lister">Dean's Lister</option>
+        </select>
+
+        <div class="modal-buttons">
+          <button class="btn primary" onclick="submitInfo()">
+            Generate PDF
+          </button>
+          <button class="btn" onclick="closeModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
