@@ -328,87 +328,118 @@ function submitInfo() {
 }
 
 function generatePDF(fullName, course, semYear, listType) {
-  // 1) Determine GWA and note
+  // 1) Compute GWA and determine badge note
   const gwaText = document.getElementById("gwaResult").innerText;
-  const gwa = parseFloat((gwaText.match(/([\d.]+)/) || [0, 0])[1]);
-  let note;
-  if (gwa <= 1.25) note = "Note: President's Lister Qualified.";
-  else if (gwa <= 1.75) note = "Note: Dean's Lister Qualified.";
-  else note = "Note: Not Qualified This Sem.";
-
-  // 2) Optional sound
-  const sa = document.getElementById("successAudio");
-  const fa = document.getElementById("failAudio");
-  if (note.includes("Not Qualified")) {
-    if (fa) fa.play().catch(() => {});
+  const gwa = parseFloat((gwaText.match(/([\d.]+)/) || [])[1] || 0);
+  let statusText, noteText;
+  if (gwa <= 1.25) {
+    statusText = "President’s Lister";
+    noteText = "Note: President’s Lister Qualified.";
+  } else if (gwa <= 1.75) {
+    statusText = "Dean’s Lister";
+    noteText = "Note: Dean’s Lister Qualified.";
   } else {
-    if (sa) sa.play().catch(() => {});
+    statusText = "Not Qualified";
+    noteText = "Note: Not Qualified This Sem.";
   }
 
-  // 3) Expand the table for full capture
+  // 2) Play success/fail audio
+  document
+    .getElementById("successAudio")
+    ?.play()
+    .catch(() => {});
+  if (statusText === "Not Qualified")
+    document
+      .getElementById("failAudio")
+      ?.play()
+      .catch(() => {});
+
+  // 3) Temporarily expand your table so html2canvas sees all rows
   const container = document.getElementById("gwaContainer");
   const tableScroll = document.querySelector(".table-scroll");
-  const origMaxH = tableScroll.style.maxHeight;
+  const oldMaxH = tableScroll.style.maxHeight;
   tableScroll.style.maxHeight = "unset";
   tableScroll.style.overflow = "visible";
 
-  setTimeout(() => {
-    html2canvas(container, {
-      scale: 2,
-      useCORS: true,
-      scrollY: -window.scrollY,
-      windowHeight: container.scrollHeight,
-    }).then((canvas) => {
-      // restore scroll
-      tableScroll.style.maxHeight = origMaxH || "300px";
-      tableScroll.style.overflow = "auto";
+  // 4) Preload banner
+  const banner = new Image();
+  banner.src = "banner.png"; // adjust path if needed
+  banner.onload = () => {
+    const pdfW = 612; // 8.5" × 72pt
+    const bannerH = 1.2 * 72; // 1.2" × 72pt ≈ 86.4pt
+    const headerY = bannerH + 30; // where note goes
 
-      // 4) Setup PDF
-      const imgData = canvas.toDataURL("image/png");
-      const { jsPDF } = window.jspdf;
-      const pdfW = 612; // 8.5" in points
-      const header = 120; // leave room for header + note
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "pt",
-        format: [pdfW, header + (canvas.height * pdfW) / canvas.width],
+    setTimeout(() => {
+      html2canvas(container, {
+        scale: 2,
+        useCORS: true,
+        scrollY: -window.scrollY,
+        windowHeight: container.scrollHeight,
+      }).then((canvas) => {
+        // restore scrolling
+        tableScroll.style.maxHeight = oldMaxH || "300px";
+        tableScroll.style.overflow = "auto";
+
+        // screenshot → image data
+        const imgData = canvas.toDataURL("image/png");
+        const { jsPDF } = window.jspdf;
+        const tmpPdf = new jsPDF();
+        const props = tmpPdf.getImageProperties(imgData);
+        const imgH = (props.height * pdfW) / props.width;
+        const pdfH = bannerH + 80 + imgH; // 80 for note & spacing
+
+        // 5) Create final PDF
+        const pdf = new jsPDF({
+          orientation: "portrait",
+          unit: "pt",
+          format: [pdfW, pdfH],
+        });
+
+        // draw banner
+        pdf.addImage(banner, "PNG", 0, 0, pdfW, bannerH);
+
+        // overlay white text, two cols
+        pdf.setFont("helvetica", "bold").setFontSize(12).setTextColor("#fff");
+        const leftX = 40;
+        const rightX = pdfW / 2 + 20;
+        const baseY = bannerH / 2 - 18;
+        const gapY = 16;
+
+        // labels
+        pdf.text("Name:", leftX, baseY);
+        pdf.text("Course:", leftX, baseY + gapY);
+        pdf.text("Year/Sem:", leftX, baseY + 2 * gapY);
+        pdf.text("Application:", leftX, baseY + 3 * gapY);
+
+        // values
+        pdf.setFont("helvetica", "normal");
+        pdf.text(fullName, rightX, baseY);
+        pdf.text(course, rightX, baseY + gapY);
+        pdf.text(semYear, rightX, baseY + 2 * gapY);
+        pdf.text(listType, rightX, baseY + 3 * gapY);
+
+        // 6) Draw red note right below
+        pdf
+          .setFont("helvetica", "bold")
+          .setFontSize(12)
+          .setTextColor("#b30000");
+        pdf.text(noteText, leftX, bannerH + 20);
+
+        // 7) Draw the full screenshot below
+        pdf.addImage(imgData, "PNG", 0, headerY, pdfW, imgH);
+
+        const filename = `${course}, ${fullName} - GWA.pdf`;
+        pdf.save(filename);
+        // 8) Save file
       });
+    }, 100);
+  };
 
-      // **FIXED**: getImageProperties on the pdf *instance*
-      const props = pdf.getImageProperties(imgData);
-      const imgH = (props.height * pdfW) / props.width;
-
-      // 5) Draw header
-      pdf
-        .setFontSize(14)
-        .setTextColor(40)
-        .setFont("helvetica", "bold")
-        .text("Name:", 40, 30)
-        .setFont("helvetica", "normal")
-        .text(fullName, 140, 30)
-        .setFont("helvetica", "bold")
-        .text("Course:", 40, 50)
-        .setFont("helvetica", "normal")
-        .text(course, 140, 50)
-        .setFont("helvetica", "bold")
-        .text("Year/Sem:", 40, 70)
-        .setFont("helvetica", "normal")
-        .text(semYear, 140, 70)
-        .setFont("helvetica", "bold")
-        .text("Application:", 40, 90)
-        .setFont("helvetica", "normal")
-        .text(listType, 140, 90)
-        .setFont("helvetica", "bold")
-        .setTextColor("#b30000")
-        .text(note, 40, 115);
-
-      // 6) Embed the screenshot
-      pdf.addImage(imgData, "PNG", 0, header, pdfW, imgH);
-
-      // 7) Save
-      pdf.save(`GWA_${fullName.replace(/\s+/g, "_")}.pdf`);
-    });
-  }, 100);
+  banner.onerror = () => {
+    alert("Could not load banner.png – please check the path/filename.");
+    tableScroll.style.maxHeight = oldMaxH || "300px";
+    tableScroll.style.overflow = "auto";
+  };
 }
 
 function downloadAsImage() {
