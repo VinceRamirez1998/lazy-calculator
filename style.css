@@ -429,81 +429,52 @@ footer {
   transform: translateY(-1px);
 }
 
-/* Modal base */
-.modal.hidden {
-  display: none;
-}
-.modal {
+#privacyModal {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1000;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-/* translucent backdrop */
-.modal-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-}
-/* white box */
-.modal-box-privacy {
-  position: relative;
-  background: #fff;
-  padding: 24px;
-  border-radius: 8px;
-  width: 320px;
-  max-width: 90%;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-  z-index: 1001;
-  font-family: "Inter", sans-serif;
-}
-.modal-box-privacy h2 {
-  margin-top: 0;
-  color: #9c0808;
-}
-.modal-box-privacy label {
-  display: block;
-  margin: 12px 0 4px;
-  font-weight: 600;
-  color: #530303;
-}
-.modal-box-privacy input,
-.modal-box-privacy select {
-  width: 100%;
-  padding: 8px 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-}
-.modal-buttons {
-  margin-top: 20px;
-  text-align: right;
-}
-.modal-buttons .btn {
-  padding: 8px 12px;
-  margin-left: 8px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-}
-.modal-buttons .btn.primary {
-  background: #9c0808;
+
+#privacyBox {
+  background-color: #7b1113;
   color: white;
+  padding: 25px 30px;
+  border-radius: 10px;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
-.modal-buttons .btn.primary:hover {
-  background: #530303;
+
+#privacyButtons {
+  text-align: right;
+  margin-top: 20px;
 }
-.modal-buttons .btn:hover {
-  background: #eee;
+
+#closePrivacyBtn {
+  background-color: #b91c1c;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#closePrivacyBtn:hover {
+  background-color: #991b1b;
+}
+
+.privacy-hidden {
+  display: none !important;
 }
 
 .remarks {

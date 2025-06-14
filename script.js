@@ -494,10 +494,10 @@ function downloadAsImage() {
   }, 100); // slight delay to allow reflow
 }
 
-function openPrivacyPolicyModal() {
-  document.getElementById("privacyPolicyModal").classList.remove("hidden");
+function openPrivacyModal() {
+  document.getElementById("privacyModal").classList.remove("privacy-hidden");
 }
 
-function closePrivacyPolicyModal() {
-  document.getElementById("privacyPolicyModal").classList.add("hidden");
+function closePrivacyModal() {
+  document.getElementById("privacyModal").classList.add("privacy-hidden");
 }
