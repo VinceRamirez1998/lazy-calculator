@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://lazy-calculator.vercel.app/sitemap.xml
