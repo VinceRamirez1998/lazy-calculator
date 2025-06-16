@@ -16,13 +16,16 @@ body {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  overflow: hidden; /* prevent scroll unless needed */
+  overflow: hidden;
+  overflow-x: hidden !important;
 }
 
 .container {
   height: 90vh;
   overflow-y: auto;
+  width: 100%;
   max-width: 960px;
+  overflow-x: hidden;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE */
   background: white;
@@ -91,6 +94,7 @@ h1::before {
   position: relative;
   background-color: white;
   max-width: 600px;
+  width: 100%;
   margin: 10% auto;
   padding: 24px;
   border-radius: 8px;
