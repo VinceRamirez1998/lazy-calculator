@@ -611,6 +611,19 @@ footer {
   .form button {
     width: 100%;
   }
+
+  .container {
+    border-radius: 0;
+  }
+
+  #subjectTable th {
+    font-size: 13px;
+    padding: 8px;
+  }
+
+  .upload-group {
+    flex-wrap: nowrap;
+  }
 }
 
 @media (max-height: 600px) {
