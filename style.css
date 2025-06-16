@@ -63,15 +63,40 @@ h1::before {
   vertical-align: middle; */
 }
 
+#privacyModalBox {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+#privacyModalOverlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  top: 0;
+  left: 0;
+}
+
 #privacyModalContent {
-  background-color: #fff;
   color: #2c2c2c;
+  position: relative;
+  background-color: white;
+  max-width: 600px;
+  margin: 10% auto;
+  padding: 24px;
+  border-radius: 8px;
+  z-index: 10000;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   font-family: "Inter", sans-serif;
-  font-size: 16px;
-  line-height: 1.7;
-  border-radius: 12px;
-  padding: 32px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
 }
 
 #privacyTitle {
@@ -623,6 +648,12 @@ footer {
 
   .upload-group {
     flex-wrap: nowrap;
+  }
+
+  #privacyModalContent {
+    margin: 0 16px;
+    padding: 24px 20px;
+    border-radius: 16px;
   }
 }
 
