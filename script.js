@@ -493,3 +493,11 @@ function downloadAsImage() {
     });
   }, 100); // slight delay to allow reflow
 }
+
+function openPrivacyBox() {
+  document.getElementById("privacyModalBox").style.display = "block";
+}
+
+function closePrivacyBox() {
+  document.getElementById("privacyModalBox").style.display = "none";
+}
