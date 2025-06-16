@@ -495,9 +495,11 @@ function downloadAsImage() {
 }
 
 function openPrivacyBox() {
-  document.getElementById("privacyModalBox").style.display = "block";
+  document.getElementById("privacyModalBox").style.display = "flex";
+  document.body.style.overflow = "hidden";
 }
 
 function closePrivacyBox() {
   document.getElementById("privacyModalBox").style.display = "none";
+  document.body.style.overflow = "auto";
 }
