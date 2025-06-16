@@ -674,6 +674,20 @@ footer {
     font-size: 13px;
     padding: 8px 16px;
   }
+
+  .loader-con {
+    position: fixed;
+    top: 1.5%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    width: 235px;
+    height: 100px;
+    padding: 20px;
+    display: none;
+    color: white;
+    text-align: center;
+  }
 }
 
 @media (max-height: 600px) {
